@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório Protegido - Processo 5357931-97.2025.8.09.0000</title>
+    <style>
+        body { 
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 15px;
+            color: #2c3e50;
+            background: #f8f9fa;
+            line-height: 1.4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .login-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .login-container h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .login-container p {
+            color: #5d6d7e;
+            margin-bottom: 30px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        input[type="password"] {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 16px;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #2c3e50;
+        }
+
+        button {
+            padding: 12px 24px;
+            border-radius: 6px;
+            border: 0;
+            background: #2c3e50;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #1a252f;
+        }
+
+        button.secondary {
+            background: #6c757d;
+        }
+
+        button.secondary:hover {
+            background: #5a6268;
+        }
+
+        .msg {
+            color: #dc3545;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+            padding: 10px;
+            background: #ffebee;
+            border-radius: 6px;
+            border-left: 4px solid #dc3545;
+        }
+
+        .footer-login {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 25px;
+            font-style: italic;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .header {
+            text-align: center;
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 20px -20px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            margin: 0 0 15px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .process-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2c3e50;
+            margin: 20px 0;
+        }
+
+        .process-info p {
+            text-indent: 0;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .section-title {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 6px;
+            font-size: 1.3em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 25px 0 15px 0;
+        }
+
+        .subsection-title {
+            background: #34495e;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            margin: 20px 0 10px 0;
+        }
+
+        .destaque {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-left: 4px solid #6c757d;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .destaque p {
+            text-indent: 0;
+            margin-bottom: 8px;
+        }
+
+        .alerta {
+            background-color: #fff8e1;
+            border: 1px solid #ffcc02;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .alerta p {
+            text-indent: 0;
+            margin-bottom: 8px;
+        }
+
+        .critico {
+            background-color: #ffebee;
+            border: 1px solid #ffcdd2;
+            border-left: 4px solid #f44336;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .critico p {
+            text-indent: 0;
+            margin-bottom: 8px;
+        }
+
+        .key-point {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #bbdefb;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .key-point p {
+            text-indent: 0;
+            margin-bottom: 8px;
+        }
+
+        p {
+            text-align: justify;
+            line-height: 1.6;
+            margin-bottom: 1.2em;
+        }
+
+        strong {
+            color: #2c3e50;
+        }
+
+        .emphasis {
+            font-weight: bold;
+            color: #dc3545;
+            text-decoration: underline;
+        }
+
+        .btn-logout {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            z-index: 1000;
+        }
+
+        .btn-logout:hover {
+            background: #c82333;
+        }
+
+        @media print {
+            body {
+                margin: 1.5cm 1cm 2cm 1.5cm;
+                background: white;
+            }
+            
+            .container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .btn-logout {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container { 
+                margin: 10px; 
+                padding: 15px; 
+            }
+            
+            .header h1 { 
+                font-size: 1.8em; 
+            }
+            
+            .section-title { 
+                font-size: 1.1em; 
+            }
+            
+            body, p { 
+                font-size: 12pt; 
+            }
+
+            .input-row {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="login-screen" class="login-container">
+        <h1>⚖️ Acesso ao Relatório Protegido</h1>
+        <p><strong>Processo nº 5357931-97.2025.8.09.0000</strong></p>
+        <p>Este documento contém informações de processo que tramita em <strong>segredo de justiça</strong>.</p>
+        <p>Informe a senha para visualizar o conteúdo protegido.</p>
+
+        <div class="input-row">
+            <input id="pwd" type="password" inputmode="numeric" placeholder="Digite a senha" aria-label="Senha">
+            <button id="enter">Acessar</button>
+            <button id="clear" class="secondary" type="button">Limpar</button>
+        </div>
+
+        <div id="msg" class="msg">⚠️ Senha incorreta. Tente novamente.</div>
+
+        <div class="footer-login">
+            Documento protegido por senha. Acesso restrito.
+        </div>
+    </div>
+
+    <button id="logout" class="btn-logout" style="display: none;">🔒 Ocultar Documento</button>
+
+    <div id="secret" class="container">
+        <div class="header">
+            <h1>⚖️ Relatório Resumido de Processo</h1>
+            <p style="margin: 0; font-size: 14px; font-style: italic;">Documento Confidencial - Segredo de Justiça</p>
+        </div>
+
+        <div class="process-info">
+            <p><strong>PROCESSO Nº:</strong> 5357931-97.2025.8.09.0000</p>
+            <p><strong>TRIBUNAL:</strong> Tribunal de Justiça do Estado de Goiás</p>
+            <p><strong>TIPO:</strong> Ação Penal</p>
+            <p><strong>NATUREZA:</strong> Inquérito Policial por Crime de Responsabilidade</p>
+            <p><strong>SITUAÇÃO:</strong> Tramita em Segredo de Justiça</p>
+        </div>
+
+        <h2 class="section-title">📋 I - IDENTIFICAÇÃO DAS PARTES</h2>
+        
+        <div class="destaque">
+            <p><strong>INVESTIGADO:</strong></p>
+            <p>Edson Guimarães de Faria</p>
+            <p><strong>Cargo:</strong> Prefeito Municipal de Pontalina/GO</p>
+        </div>
+
+        <div class="destaque">
+            <p><strong>DENUNCIANTE:</strong></p>
+            <p>Vereadores do Município de Pontalina/GO</p>
+        </div>
+
+        <div class="destaque">
+            <p><strong>DENÚNCIA:</strong></p>
+            <p>Denúncia nº 59/2025</p>
+            <p><strong>Base Legal:</strong> Art. 1º, incisos I e II, do Decreto-Lei nº 201/1967</p>
+        </div>
+
+        <h2 class="section-title">📋 II - RESUMO DOS FATOS INVESTIGADOS</h2>
+
+        <p>Os vereadores do município apresentaram denúncia contra o Prefeito Edson Guimarães de Faria, relatando indícios de uso irregular de bens públicos, servidores municipais e estrutura pública para benefício particular.</p>
+
+        <div class="critico">
+            <p><strong>⚠️ FATOS PRINCIPAIS:</strong></p>
+            <p>• Produção de aproximadamente <span class="emphasis">1.500 postes de concreto</span> em fábrica municipal</p>
+            <p>• Transporte dos postes para fazenda particular do investigado</p>
+            <p>• Utilização alegada: cultivo de <strong>pitaya</strong> em propriedade privada</p>
+            <p>• Indícios de participação da secretária municipal <strong>Rita Fernandes</strong></p>
+        </div>
+
+        <div class="key-point">
+            <p><strong>💰 DANO ESTIMADO AO ERÁRIO:</strong></p>
+            <p>Até <span class="emphasis">R$ 280.125,00</span> (duzentos e oitenta mil, cento e vinte e cinco reais)</p>
+            <p><em>Conforme avaliação dos materiais apreendidos</em></p>
+        </div>
+
+        <h2 class="section-title">📋 III - TIPO PENAL IMPUTADO</h2>
+
+        <div class="destaque">
+            <p><strong>DECRETO-LEI Nº 201/1967</strong></p>
+            <p><strong>Art. 1º, I e II - Crimes de Responsabilidade de Prefeitos</strong></p>
+            <p><strong>Inciso I:</strong> Apropriar-se de bens ou rendas públicas, ou desviá-los em proveito próprio ou alheio</p>
+            <p><strong>Inciso II:</strong> Utilizar-se, indevidamente, em proveito próprio ou alheio, de bens, rendas ou serviços públicos</p>
+        </div>
+
+        <h2 class="section-title">📋 IV - INQUÉRITO POLICIAL</h2>
+
+        <div class="process-info">
+            <p><strong>DELEGADA RESPONSÁVEL:</strong></p>
+            <p>Dra. Tatiana Barbosa</p>
+            <p>Delegada de Polícia</p>
+        </div>
+
+        <div class="process-info">
+            <p><strong>DELEGACIA RESPONSÁVEL:</strong></p>
+            <p><strong>POLÍCIA CIVIL - DERCAP</strong></p>
+            <p>Delegacia Estadual de Repressão a Crimes Contra a Administração Pública</p>
+            <p><strong>Endereço:</strong> Av. Independência, 2.716, Qd-E, Lt-07 – St. Leste Vila Nova (2º Andar)</p>
+            <p><strong>CEP:</strong> 74645-010 – Goiânia-GO</p>
+            <p><strong>Telefone:</strong> (62) 3201-1548</p>
+        </div>
+
+        <h2 class="section-title">📋 V - DECISÃO JUDICIAL</h2>
+
+        <div class="process-info">
+            <p><strong>JUIZ RELATOR:</strong> Des. Oscar Sá Neto</p>
+            <p><strong>TRIBUNAL:</strong> Tribunal de Justiça do Estado de Goiás</p>
+        </div>
+
+        <h3 class="subsection-title">Medidas Autorizadas pelo Juiz Relator</h3>
+
+        <div class="key-point">
+            <p><strong>✓ INSTAURAÇÃO DE INQUÉRITO POLICIAL</strong></p>
+            <p>Autorizada a instauração formal de investigação criminal</p>
+        </div>
+
+        <div class="key-point">
+            <p><strong>✓ BUSCA E APREENSÃO</strong></p>
+            <p>Autorizadas medidas de busca e apreensão nos seguintes locais:</p>
+            <p>• Residências dos investigados</p>
+            <p>• Fazenda particular onde foram encontrados os postes</p>
+            <p>• Instalações públicas municipais relacionadas</p>
+        </div>
+
+        <div class="key-point">
+            <p><strong>✓ QUEBRA DE SIGILO</strong></p>
+            <p>Autorizada quebra de:</p>
+            <p>• Sigilo telefônico</p>
+            <p>• Sigilo telemático</p>
+            <p>• Sigilo informático</p>
+        </div>
+
+        <div class="key-point">
+            <p><strong>✓ COMPARTILHAMENTO DE PROVAS</strong></p>
+            <p>Autorizado compartilhamento de provas com órgãos de controle competentes</p>
+        </div>
+
+        <div class="key-point">
+            <p><strong>✓ ACOMPANHAMENTO PELO MINISTÉRIO PÚBLICO</strong></p>
+            <p>Determinado acompanhamento das investigações pelo Parquet</p>
+        </div>
+
+        <div class="alerta">
+            <p><strong>⚠️ LIMITAÇÃO DAS MEDIDAS:</strong></p>
+            <p>As medidas autorizadas <strong>NÃO INCLUEM</strong> locais que já foram objeto de investigação em ação de improbidade administrativa previamente ajuizada, evitando-se duplicidade de diligências.</p>
+        </div>
+
+        <h2 class="section-title">📋 VI - OBSERVAÇÕES IMPORTANTES</h2>
+
+        <div class="critico">
+            <p><strong>🔒 SEGREDO DE JUSTIÇA</strong></p>
+            <p>O processo tramita sob <span class="emphasis">SEGREDO DE JUSTIÇA</span>, nos termos da legislação aplicável.</p>
+            <p>O acesso aos autos é restrito às partes, seus advogados devidamente constituídos e ao Ministério Público.</p>
+            <p><strong>A divulgação não autorizada de informações deste processo pode configurar crime</strong>, nos termos do art. 325 do Código Penal (violação de sigilo funcional).</p>
+        </div>
+
+        <div class="alerta">
+            <p><strong>⚠️ PRESUNÇÃO DE INOCÊNCIA</strong></p>
+            <p>Ressalta-se que o investigado goza da <strong>presunção constitucional de inocência</strong> (art. 5º, LVII, da Constituição Federal), não podendo ser considerado culpado até o trânsito em julgado de eventual sentença penal condenatória.</p>
+            <p>As investigações visam apurar a existência de materialidade e autoria delitivas, sendo garantido o pleno exercício do direito de defesa em todas as fases processuais.</p>
+        </div>
+
+        <div class="process-info" style="text-align: center; margin-top: 40px; padding: 25px;">
+            <p style="font-size: 12px; color: #6c757d; font-style: italic; margin: 0;">
+                Documento confidencial - Uso restrito<br>
+                Relatório gerado para fins de acompanhamento processual<br>
+                Vedada a reprodução ou divulgação não autorizada
+            </p>
+        </div>
+    </div>
+
+    <script>
+        (function(){
+            const CORRECT = "1010";
+            const pwd = document.getElementById('pwd');
+            const enter = document.getElementById('enter');
+            const clear = document.getElementById('clear');
+            const logout = document.getElementById('logout');
+            const secret = document.getElementById('secret');
+            const loginScreen = document.getElementById('login-screen');
+            const msg = document.getElementById('msg');
+
+            function showSecret() {
+                const value = pwd.value || "";
+                if (value === CORRECT) {
+                    msg.style.display = 'none';
+                    secret.style.display = 'block';
+                    loginScreen.style.display = 'none';
+                    logout.style.display = 'block';
+                    pwd.value = '';
+                    window.scrollTo(0, 0);
+                } else {
+                    msg.style.display = 'block';
+                    secret.style.display = 'none';
+                    loginScreen.style.display = 'block';
+                    logout.style.display = 'none';
+                }
+            }
+
+            function hideSecret() {
+                pwd.value = '';
+                msg.style.display = 'none';
+                secret.style.display = 'none';
+                loginScreen.style.display = 'block';
+                logout.style.display = 'none';
+                pwd.focus();
+                window.scrollTo(0, 0);
+            }
+
+            enter.addEventListener('click', showSecret);
+            pwd.addEventListener('keydown', function(e){
+                if (e.key === 'Enter') showSecret();
+            });
+            clear.addEventListener('click', function(){
+                pwd.value = '';
+                msg.style.display = 'none';
+                pwd.focus();
+            });
+            logout.addEventListener('click', hideSecret);
+
+            // Foco automático no campo de senha ao carregar
+            pwd.focus();
+        })();
+    </script>
+</body>
+</html>
