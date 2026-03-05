@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Central de Atendimento — Diagrama</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f4f0;
+  --ink: #1a1a1a;
+  --ink2: #555;
+  --ink3: #999;
+  --line: #c8c5bc;
+  --cyan: #0077cc;
+  --cyan-bg: #e8f3ff;
+  --yellow: #c47c00;
+  --yellow-bg: #fff8e1;
+  --green: #1a7a4a;
+  --green-bg: #e8f7ee;
+  --orange: #c44400;
+  --orange-bg: #fff0ea;
+  --purple: #6633cc;
+  --purple-bg: #f0eaff;
+  --red: #cc2200;
+  --red-bg: #ffecec;
+  --node-shadow: 0 2px 8px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.06);
+  --active-shadow: 0 4px 20px rgba(0,0,0,0.15), 0 0 0 2px rgba(0,119,204,0.4);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  padding-bottom: 120px;
+}
+
+/* ─── HEADER ─── */
+header {
+  background: var(--ink);
+  color: #fff;
+  padding: 20px 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+
+.logo {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  font-size: 13px;
+  background: #0077cc;
+  padding: 6px 12px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+header h1 {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: #fff;
+}
+
+header p {
+  font-size: 12px;
+  color: #888;
+  margin-top: 1px;
+}
+
+.header-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.progress-bar-wrap {
+  width: 140px;
+  height: 4px;
+  background: #333;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0077cc, #00aaff);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+
+.progress-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: #888;
+}
+
+.btn-reset {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  background: none;
+  border: 1px solid #444;
+  color: #aaa;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-reset:hover { border-color: #888; color: #fff; }
+
+/* ─── MAIN ─── */
+main {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 48px 24px 0;
+}
+
+/* ─── FLOW ─── */
+.flow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* ─── NODE BASE ─── */
+.node-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(12px) scale(0.97);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+
+.node-wrap.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+.node-wrap.hidden-node {
+  display: none;
+}
+
+/* ─── CONNECTOR LINE ─── */
+.line {
+  width: 2px;
+  height: 32px;
+  background: linear-gradient(to bottom, var(--line), var(--line));
+  position: relative;
+  flex-shrink: 0;
+}
+
+.line.dashed {
+  background: repeating-linear-gradient(to bottom, var(--line) 0, var(--line) 4px, transparent 4px, transparent 8px);
+}
+
+.line-label {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  padding: 2px 8px;
+  border-radius: 3px;
+}
+
+.line-label.yes { background: var(--green-bg); color: var(--green); }
+.line-label.no  { background: var(--yellow-bg); color: var(--yellow); }
+.line-label.ok  { background: var(--green-bg); color: var(--green); }
+.line-label.fail{ background: var(--red-bg); color: var(--red); }
+
+/* ─── GENERIC NODE ─── */
+.node {
+  width: 100%;
+  max-width: 560px;
+  border-radius: 8px;
+  box-shadow: var(--node-shadow);
+  overflow: hidden;
+  cursor: default;
+}
+
+.node-header {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.node-step {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  opacity: 0.65;
+  text-transform: uppercase;
+}
+
+.node-title {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.node-body {
+  padding: 0 16px 12px;
+}
+
+.node-desc {
+  font-size: 13px;
+  color: var(--ink2);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+/* Colors */
+.node.cyan   { background: var(--cyan-bg); }
+.node.yellow { background: var(--yellow-bg); }
+.node.green  { background: var(--green-bg); }
+.node.orange { background: var(--orange-bg); }
+.node.purple { background: var(--purple-bg); }
+.node.red    { background: var(--red-bg); }
+.node.white  { background: #fff; }
+
+.node.cyan   .node-step, .node.cyan   .node-title { color: var(--cyan); }
+.node.yellow .node-step, .node.yellow .node-title { color: var(--yellow); }
+.node.green  .node-step, .node.green  .node-title { color: var(--green); }
+.node.orange .node-step, .node.orange .node-title { color: var(--orange); }
+.node.purple .node-step, .node.purple .node-title { color: var(--purple); }
+.node.red    .node-step, .node.red    .node-title { color: var(--red); }
+.node.white  .node-step { color: var(--ink3); }
+.node.white  .node-title { color: var(--ink); }
+
+/* ─── CLICKABLE NODE (triggers next) ─── */
+.node.clickable {
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.15s;
+}
+
+.node.clickable:hover {
+  box-shadow: var(--active-shadow);
+  transform: translateY(-1px);
+}
+
+.node.clickable:active { transform: scale(0.99); }
+
+.click-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--ink3);
+  border: 1px dashed var(--line);
+  padding: 4px 10px;
+  border-radius: 4px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.node.clickable:hover .click-hint {
+  color: var(--cyan);
+  border-color: var(--cyan);
+}
+
+.click-hint::before { content: '▶'; font-size: 9px; }
+
+/* ─── DECISION NODE ─── */
+.node.decision {
+  background: #fff;
+  border: 2px solid var(--purple);
+  clip-path: none;
+  position: relative;
+}
+
+.node.decision .node-title { color: var(--purple); }
+.node.decision .node-step  { color: var(--purple); opacity: 0.6; }
+
+.decision-icon {
+  width: 28px; height: 28px;
+  background: var(--purple-bg);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+/* ─── BRANCH (2 columns after decision) ─── */
+.branch-wrap {
+  width: 100%;
+  max-width: 680px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.branch-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.branch-header {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 4px;
+  margin-bottom: 0;
+}
+
+.branch-header.yes  { background: var(--green-bg); color: var(--green); }
+.branch-header.no   { background: var(--yellow-bg); color: var(--yellow); }
+.branch-header.ok   { background: var(--green-bg); color: var(--green); }
+.branch-header.fail { background: var(--red-bg); color: var(--red); }
+
+/* ─── PHASE DIVIDER ─── */
+.phase-divider {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 8px 0;
+}
+
+.phase-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+.phase-divider-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.phase-divider-label.p1 { background: var(--cyan-bg); color: var(--cyan); border: 1px solid rgba(0,119,204,0.2); }
+.phase-divider-label.p2 { background: var(--yellow-bg); color: var(--yellow); border: 1px solid rgba(196,124,0,0.2); }
+.phase-divider-label.p3 { background: var(--green-bg); color: var(--green); border: 1px solid rgba(26,122,74,0.2); }
+
+/* ─── TAGS / BADGES ─── */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.tag {
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.tag.field   { background: rgba(0,0,0,0.06); color: var(--ink2); }
+.tag.elegis  { background: #fff0ea; color: var(--orange); border: 1px solid rgba(196,68,0,0.2); }
+.tag.sac     { background: #fff0ea; color: var(--orange); border: 1px solid rgba(196,68,0,0.15); }
+.tag.tool    { background: var(--green-bg); color: var(--green); border: 1px solid rgba(26,122,74,0.15); }
+.tag.tel     { background: var(--cyan-bg); color: var(--cyan); border: 1px solid rgba(0,119,204,0.15); }
+
+/* ─── ENTRY BADGE ─── */
+.entry-node {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 100px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: var(--node-shadow);
+}
+
+.entry-dot {
+  width: 8px; height: 8px;
+  background: #0f0;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #0f0;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ─── DONE NODE ─── */
+.done-node {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: var(--green);
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: 0 4px 16px rgba(26,122,74,0.3);
+}
+
+/* ─── SCROLLED INTO VIEW ─── */
+.scroll-target {
+  scroll-margin-top: 80px;
+}
+
+/* responsive */
+@media (max-width: 600px) {
+  .branch-wrap { grid-template-columns: 1fr; }
+  main { padding: 24px 12px 0; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">CA</div>
+  <div>
+    <h1>Central de Atendimento</h1>
+    <p>Fluxo Operacional — Elegis / SAC</p>
+  </div>
+  <div class="header-right">
+    <span class="progress-label" id="progress-text">0 / 18</span>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-bar"></div></div>
+    <button class="btn-reset" onclick="resetFlow()">↺ Reiniciar</button>
+  </div>
+</header>
+
+<main>
+<div class="flow" id="flow">
+
+  <!-- N0: Entrada -->
+  <div class="node-wrap visible" id="n0" data-next="n1">
+    <div class="entry-node scroll-target">
+      <div class="entry-dot"></div>
+      Cidadão entra em contato via WhatsApp / Instagram / Facebook
+    </div>
+  </div>
+
+  <div class="node-wrap visible" id="line-n0">
+    <div class="line"></div>
+  </div>
+
+  <!-- N1: Atendente recebe -->
+  <div class="node-wrap visible" id="n1" data-next="n2">
+    <div class="node cyan clickable scroll-target" onclick="advance('n2', this)">
+      <div class="node-header">
+        <div class="node-step">Passo 1</div>
+        <div class="node-title">Atendente da Central de Interação recebe o contato</div>
+      </div>
+      <div class="node-body">
+        <div class="node-desc">O atendente acessa as ferramentas e registra o início do atendimento.</div>
+        <div class="tags">
+          <span class="tag tool">⬡ Ferramentas</span>
+          <span class="tag elegis">⬡ Elegis</span>
+          <span class="tag sac">⬡ SAC+</span>
+        </div>
+        <div class="click-hint">Avançar</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n1"><div class="line"></div></div>
+
+  <!-- N2: Decisão - já cadastrado? -->
+  <div class="node-wrap hidden-node" id="n2" data-next="branch-cadastro">
+    <div class="node decision clickable scroll-target" onclick="advance('branch-cadastro', this)">
+      <div class="node-header">
+        <div class="decision-icon">◆</div>
+        <div>
+          <div class="node-step">Decisão</div>
+          <div class="node-title">Cidadão já está cadastrado?</div>
+        </div>
+      </div>
+      <div class="node-body">
+        <div class="click-hint">Ver caminhos</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n2"><div class="line"></div></div>
+
+  <!-- BRANCH: cadastro -->
+  <div class="node-wrap hidden-node" id="branch-cadastro" data-next="n3">
+    <div class="branch-wrap scroll-target">
+      <!-- NÃO -->
+      <div class="branch-col">
+        <div class="branch-header no">↙ Não</div>
+        <div class="line" style="height:16px"></div>
+        <div class="node yellow" style="width:100%">
+          <div class="node-header">
+            <div class="node-step">Passo 2A</div>
+            <div class="node-title">Cadastrar Cidadão</div>
+          </div>
+          <div class="node-body">
+            <div class="node-desc">Preencher todos os dados no sistema.</div>
+            <div class="tags">
+              <span class="tag field">Nome</span>
+              <span class="tag field">Endereço</span>
+              <span class="tag field">Celular</span>
+              <span class="tag field">Instagram</span>
+              <span class="tag field">Data Nasc.</span>
+              <span class="tag field">Gênero</span>
+              <span class="tag field">Indicação</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- SIM -->
+      <div class="branch-col">
+        <div class="branch-header yes">↘ Sim</div>
+        <div class="line" style="height:16px"></div>
+        <div class="node cyan" style="width:100%">
+          <div class="node-header">
+            <div class="node-step">Passo 2B</div>
+            <div class="node-title">Verificar Cadastro Existente</div>
+          </div>
+          <div class="node-body">
+            <div class="node-desc">Localizar, confirmar e atualizar os dados com o cidadão.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="width:100%; display:flex; justify-content:center; margin-top:8px;">
+      <div class="node clickable white" style="width:100%; max-width:560px; cursor:pointer;" onclick="advance('n3', this)">
+        <div class="node-body" style="padding:12px 16px 10px">
+          <div style="font-size:13px; color:var(--ink2)">Ambos os caminhos convergem para o próximo passo.</div>
+          <div class="click-hint">Continuar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n3"><div class="line"></div></div>
+
+  <!-- N3: Criar atendimento -->
+  <div class="node-wrap hidden-node" id="n3" data-next="n4">
+    <div class="node cyan clickable scroll-target" onclick="advance('n4', this)">
+      <div class="node-header">
+        <div class="node-step">Passo 3</div>
+        <div class="node-title">Criar Atendimento</div>
+      </div>
+      <div class="node-body">
+        <div class="node-desc">Abrir novo registro no sistema Elegis.</div>
+        <div class="click-hint">Avançar</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n4"><div class="line"></div></div>
+
+  <!-- N4: Selecionar Assunto -->
+  <div class="node-wrap hidden-node" id="n4" data-next="n5">
+    <div class="node cyan clickable scroll-target" onclick="advance('n5', this)">
+      <div class="node-header">
+        <div class="node-step">Passo 4</div>
+        <div class="node-title">Selecionar Assunto / Macrotema</div>
+      </div>
+      <div class="node-body">
+        <div class="node-desc">Classificar o atendimento conforme o tema principal da solicitação.</div>
+        <div class="click-hint">Avançar</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n5"><div class="line"></div></div>
+
+  <!-- N5: Andamento Inicial (ação obrigatória) -->
+  <div class="node-wrap hidden-node" id="n5" data-next="n6">
+    <div class="node yellow clickable scroll-target" onclick="advance('n6', this)">
+      <div class="node-header">
+        <div class="node-step">⚡ Passo 5 — Ação Obrigatória</div>
+        <div class="node-title">Criar Andamento Inicial</div>
+      </div>
+      <div class="node-body">
+        <div class="node-desc">Registrar o andamento inicial com todas as informações coletadas.</div>
+        <div class="click-hint">Avançar</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n6"><div class="line"></div></div>
+
+  <!-- N6: Quem indicou + Assessor -->
+  <div class="node-wrap hidden-node" id="n6" data-next="n7">
+    <div class="node cyan clickable scroll-target" onclick="advance('n7', this)">
+      <div class="node-header">
+        <div class="node-step">Passo 5A</div>
+        <div class="node-title">Quem indicou? + Assessor Responsável</div>
+      </div>
+      <div class="node-body">
+        <div class="node-desc">Informar a origem do contato e o assessor responsável pelo atendimento.</div>
+        <div class="click-hint">Avançar</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n7"><div class="line"></div></div>
+
+  <!-- N7: Descrição detalhada -->
+  <div class="node-wrap hidden-node" id="n7" data-next="n8">
+    <div class="node cyan clickable scroll-target" onclick="advance('n8', this)">
+      <div class="node-header">
+        <div class="node-step">Passo 5B</div>
+        <div class="node-title">Inserir Descrição Detalhada</div>
+      </div>
+      <div class="node-body">
+        <div class="node-desc">Registrar detalhadamente o pedido ou solicitação do cidadão.</div>
+        <div class="click-hint">Avançar</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n8"><div class="line"></div></div>
+
+  <!-- N8: Anexar documentos -->
+  <div class="node-wrap hidden-node" id="n8" data-next="n9">
+    <div class="node white clickable scroll-target" onclick="advance('n9', this)">
+      <div class="node-header">
+        <div class="node-step">Passo 6</div>
+        <div class="node-title">Anexar TODOS os Documentos / Fotos</div>
+      </div>
+      <div class="node-body">
+        <div class="node-desc">Anexar todos os documentos e fotos relevantes ao atendimento.</div>
+        <div class="tags">
+          <span class="tag tool">⬡ Ferramentas</span>
+          <span class="tag elegis">⬡ Elegis</span>
+        </div>
+        <div class="click-hint">Avançar</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n9"><div class="line"></div></div>
+
+  <!-- N9: Destinar ao Coordenador -->
+  <div class="node-wrap hidden-node" id="n9" data-next="divider-fase2">
+    <div class="node cyan clickable scroll-target" onclick="advance('divider-fase2', this)">
+      <div class="node-header">
+        <div class="node-step">Passo 7</div>
+        <div class="node-title">Destinar ao Coordenador de Interação</div>
+      </div>
+      <div class="node-body">
+        <div class="node-desc">Preencher: Departamento de Distribuição · Responsável · Nome. Destinar para o <strong>Coordenador de Interação</strong>.</div>
+        <div class="click-hint">Avançar para Fase 2</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-divider-f2"><div class="line dashed" style="height:40px"></div></div>
+
+  <!-- DIVIDER FASE 2 -->
+  <div class="node-wrap hidden-node" id="divider-fase2" data-next="n10">
+    <div class="phase-divider scroll-target">
+      <div class="phase-divider-line"></div>
+      <div class="phase-divider-label p2">Fase 2 — Filtro · Coordenador</div>
+      <div class="phase-divider-line"></div>
+    </div>
+    <div class="node yellow clickable" style="margin-top:8px; width:100%; max-width:560px;" onclick="advance('n10', this)">
+      <div class="node-body" style="padding:12px 16px 10px">
+        <div style="font-size:13px; color:var(--ink2)">O pedido chegou ao Coordenador de Interação para análise e filtro.</div>
+        <div class="click-hint">Iniciar Fase 2</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n10"><div class="line"></div></div>
+
+  <!-- N10: Coordenador analisa -->
+  <div class="node-wrap hidden-node" id="n10" data-next="n11">
+    <div class="node yellow clickable scroll-target" onclick="advance('n11', this)">
+      <div class="node-header">
+        <div class="node-step">Fase 2 · Passo 1</div>
+        <div class="node-title">Coordenador avalia o pedido</div>
+      </div>
+      <div class="node-body">
+        <div class="node-desc">O Coordenador de Interação analisa o pedido recebido e decide o encaminhamento.</div>
+        <div class="tags">
+          <span class="tag tool">⬡ Ferramentas</span>
+          <span class="tag elegis">⬡ Elegis</span>
+        </div>
+        <div class="click-hint">Avançar</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n11"><div class="line"></div></div>
+
+  <!-- N11: Decisão aprovado? -->
+  <div class="node-wrap hidden-node" id="n11" data-next="branch-aprovado">
+    <div class="node decision clickable scroll-target" onclick="advance('branch-aprovado', this)">
+      <div class="node-header">
+        <div class="decision-icon">◆</div>
+        <div>
+          <div class="node-step">Decisão</div>
+          <div class="node-title">Pedido aprovado pelo Coordenador?</div>
+        </div>
+      </div>
+      <div class="node-body">
+        <div class="click-hint">Ver caminhos</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n11b"><div class="line"></div></div>
+
+  <!-- BRANCH: aprovado -->
+  <div class="node-wrap hidden-node" id="branch-aprovado" data-next="n12">
+    <div class="branch-wrap scroll-target">
+      <!-- INVIÁVEL -->
+      <div class="branch-col">
+        <div class="branch-header fail">↙ Incompleto / Inviável</div>
+        <div class="line" style="height:16px"></div>
+        <div class="node red" style="width:100%">
+          <div class="node-header">
+            <div class="node-step">Retorno</div>
+            <div class="node-title">Devolver ao Atendente ou Encerrar</div>
+          </div>
+          <div class="node-body">
+            <div class="node-desc">Pedido devolvido para complementação ou encerrado por inviabilidade.</div>
+          </div>
+        </div>
+      </div>
+      <!-- APROVADO -->
+      <div class="branch-col">
+        <div class="branch-header ok">↘ Aprovado</div>
+        <div class="line" style="height:16px"></div>
+        <div class="node green" style="width:100%">
+          <div class="node-header">
+            <div class="node-step">Aprovação</div>
+            <div class="node-title">Criar Novo Andamento</div>
+          </div>
+          <div class="node-body">
+            <div class="node-desc">Criar andamento de encaminhamento técnico/legal.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="width:100%; display:flex; justify-content:center; margin-top:8px;">
+      <div class="node clickable white" style="width:100%; max-width:560px; cursor:pointer;" onclick="advance('n12', this)">
+        <div class="node-body" style="padding:12px 16px 10px">
+          <div style="font-size:13px; color:var(--ink2)">Pedido aprovado segue para análise técnica/legal.</div>
+          <div class="click-hint">Continuar fluxo aprovado</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n12"><div class="line"></div></div>
+
+  <!-- N12: Destinar Resp. Técnico -->
+  <div class="node-wrap hidden-node" id="n12" data-next="divider-fase3">
+    <div class="node cyan clickable scroll-target" onclick="advance('divider-fase3', this)">
+      <div class="node-header">
+        <div class="node-step">Fase 2 · Passo 2</div>
+        <div class="node-title">Destinar: Responsável Técnico / Legal</div>
+      </div>
+      <div class="node-body">
+        <div class="node-desc">Atribuir o atendimento ao setor técnico ou jurídico competente.</div>
+        <div class="click-hint">Avançar para Fase 3</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-divider-f3"><div class="line dashed" style="height:40px"></div></div>
+
+  <!-- DIVIDER FASE 3 -->
+  <div class="node-wrap hidden-node" id="divider-fase3" data-next="n13">
+    <div class="phase-divider scroll-target">
+      <div class="phase-divider-line"></div>
+      <div class="phase-divider-label p3">Fase 3 — Execução e Resposta</div>
+      <div class="phase-divider-line"></div>
+    </div>
+    <div class="node green clickable" style="margin-top:8px; width:100%; max-width:560px;" onclick="advance('n13', this)">
+      <div class="node-body" style="padding:12px 16px 10px">
+        <div style="font-size:13px; color:var(--ink2)">O Responsável Técnico/Legal recebe o atendimento para execução.</div>
+        <div class="click-hint">Iniciar Fase 3</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n13"><div class="line"></div></div>
+
+  <!-- N13: Análise técnica -->
+  <div class="node-wrap hidden-node" id="n13" data-next="n14">
+    <div class="node green clickable scroll-target" onclick="advance('n14', this)">
+      <div class="node-header">
+        <div class="node-step">Fase 3 · Passo 1</div>
+        <div class="node-title">Análise Técnica e Execução</div>
+      </div>
+      <div class="node-body">
+        <div class="node-desc">O Responsável Técnico ou Jurídico executa a análise e providências necessárias.</div>
+        <div class="click-hint">Avançar</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n14"><div class="line"></div></div>
+
+  <!-- N14: Resposta final -->
+  <div class="node-wrap hidden-node" id="n14" data-next="n15">
+    <div class="node white clickable scroll-target" onclick="advance('n15', this)">
+      <div class="node-header">
+        <div class="node-step">Fase 3 · Passo 2</div>
+        <div class="node-title">Resposta Final no Sistema</div>
+      </div>
+      <div class="node-body">
+        <div class="node-desc">A resposta final é registrada no sistema com o resultado da análise.</div>
+        <div class="tags">
+          <span class="tag tool">⬡ Ferramentas</span>
+          <span class="tag elegis">⬡ Elegis</span>
+        </div>
+        <div class="click-hint">Avançar</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n15"><div class="line"></div></div>
+
+  <!-- N15: Atendente de respostas -->
+  <div class="node-wrap hidden-node" id="n15" data-next="n-done">
+    <div class="node cyan clickable scroll-target" onclick="advance('n-done', this)">
+      <div class="node-header">
+        <div class="node-step">Fase 3 · Passo 3</div>
+        <div class="node-title">Atendente de Respostas recebe e executa</div>
+      </div>
+      <div class="node-body">
+        <div class="node-desc">O atendente recebe as instruções e retorna ao cidadão pelos canais disponíveis com a resposta final.</div>
+        <div class="tags">
+          <span class="tag tool">⬡ Ferramentas</span>
+          <span class="tag elegis">⬡ Elegis</span>
+          <span class="tag sac">⬡ SAC+</span>
+          <span class="tag tel">📞 Telefone Convencional</span>
+        </div>
+        <div class="click-hint">Concluir atendimento</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="node-wrap hidden-node" id="line-n-done"><div class="line"></div></div>
+
+  <!-- DONE -->
+  <div class="node-wrap hidden-node" id="n-done">
+    <div class="done-node scroll-target">
+      ✓ Atendimento concluído — Cidadão respondido
+    </div>
+  </div>
+
+</div><!-- /flow -->
+</main>
+
+<script>
+// Map: each node ID → which line to reveal before it
+const lineMap = {
+  'n2':             'line-n1',
+  'branch-cadastro':'line-n2',
+  'n3':             'line-n3',
+  'n4':             'line-n4',
+  'n5':             'line-n5',
+  'n6':             'line-n6',
+  'n7':             'line-n7',
+  'n8':             'line-n8',
+  'n9':             'line-n9',
+  'divider-fase2':  'line-divider-f2',
+  'n10':            'line-n10',
+  'n11':            'line-n11',
+  'branch-aprovado':'line-n11b',
+  'n12':            'line-n12',
+  'divider-fase3':  'line-divider-f3',
+  'n13':            'line-n13',
+  'n14':            'line-n14',
+  'n15':            'line-n15',
+  'n-done':         'line-n-done',
+};
+
+// Total steps for progress
+const totalSteps = 18;
+let revealed = 2; // n0 and n1 are already visible
+
+function advance(nextId, triggerEl) {
+  // Remove click hint + pointer cursor on the clicked node
+  if (triggerEl) {
+    triggerEl.classList.remove('clickable');
+    triggerEl.style.cursor = 'default';
+    triggerEl.onclick = null;
+    const hint = triggerEl.querySelector('.click-hint');
+    if (hint) hint.style.display = 'none';
+  }
+
+  // Reveal the line before the next node
+  const lineId = lineMap[nextId];
+  if (lineId) {
+    const lineEl = document.getElementById(lineId);
+    if (lineEl) {
+      lineEl.classList.remove('hidden-node');
+      setTimeout(() => lineEl.classList.add('visible'), 10);
+    }
+  }
+
+  // Reveal the next node
+  setTimeout(() => {
+    const nextEl = document.getElementById(nextId);
+    if (!nextEl) return;
+    nextEl.classList.remove('hidden-node');
+    setTimeout(() => {
+      nextEl.classList.add('visible');
+      nextEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 20);
+    revealed++;
+    updateProgress();
+  }, lineId ? 280 : 0);
+}
+
+function updateProgress() {
+  const pct = Math.min(100, Math.round((revealed / totalSteps) * 100));
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = revealed + ' / ' + totalSteps;
+}
+
+function resetFlow() {
+  // Hide all nodes except n0 and n1
+  document.querySelectorAll('.node-wrap').forEach(el => {
+    const id = el.id;
+    if (id === 'n0' || id === 'n1') {
+      el.classList.remove('hidden-node');
+      el.classList.add('visible');
+    } else {
+      el.classList.remove('visible');
+      el.classList.add('hidden-node');
+    }
+  });
+
+  // Restore clickable state on n1
+  const n1node = document.querySelector('#n1 .node');
+  if (n1node) {
+    n1node.classList.add('clickable');
+    n1node.style.cursor = 'pointer';
+    n1node.onclick = function() { advance('n2', this); };
+    const hint = n1node.querySelector('.click-hint');
+    if (hint) hint.style.display = '';
+  }
+
+  revealed = 2;
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Reload page for clean state (simpler)
+  location.reload();
+}
+
+updateProgress();
+</script>
+</body>
+</html>
